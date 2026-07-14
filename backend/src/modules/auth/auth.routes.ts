@@ -38,6 +38,29 @@ export async function authRoutes(fastify: FastifyInstance) {
     }
   });
 
+  fastify.get("/google/status", { preHandler: [(fastify as any).authenticate] }, async (request, reply) => {
+    const user = request.user as { id: string };
+    const { getGoogleConnection } = await import("../../lib/google-auth.js");
+    const connection = await getGoogleConnection(user.id);
+    return reply.send({
+      connected: !!connection,
+      googleEmail: connection?.googleEmail || null,
+      tokenExpiry: connection?.tokenExpiry || null,
+      createdAt: connection?.createdAt || null,
+    });
+  });
+
+  fastify.delete("/google/disconnect", { preHandler: [(fastify as any).authenticate] }, async (request, reply) => {
+    const user = request.user as { id: string };
+    const { disconnectGoogle } = await import("../../lib/google-auth.js");
+    try {
+      await disconnectGoogle(user.id);
+      return reply.send({ message: "Connessione Google rimossa con successo" });
+    } catch {
+      return reply.status(404).send({ error: "Nessuna connessione Google trovata" });
+    }
+  });
+
   fastify.get("/google/start", async (request, reply) => {
     const { getGoogleAuthUrl } = await import("../../lib/google-auth.js");
     const state = (request.query as any).userId || "default";
@@ -53,9 +76,9 @@ export async function authRoutes(fastify: FastifyInstance) {
     try {
       const { handleGoogleCallback } = await import("../../lib/google-auth.js");
       await handleGoogleCallback(code, state);
-      return reply.redirect(`${process.env.FRONTEND_URL}/dashboard?google=connected`);
+      return reply.redirect(`${process.env.FRONTEND_URL}/settings?google=connected`);
     } catch (err: any) {
-      return reply.redirect(`${process.env.FRONTEND_URL}/dashboard?google=error`);
+      return reply.redirect(`${process.env.FRONTEND_URL}/settings?google=error`);
     }
   });
 }

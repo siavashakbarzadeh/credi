@@ -12,6 +12,7 @@ export function getGoogleAuthUrl(userId: string): string {
     "https://www.googleapis.com/auth/documents",
     "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/drive.file",
+    "https://www.googleapis.com/auth/userinfo.email",
   ];
 
   return oauth2Client.generateAuthUrl({
@@ -25,19 +26,31 @@ export function getGoogleAuthUrl(userId: string): string {
 export async function handleGoogleCallback(code: string, userId: string) {
   const { tokens } = await oauth2Client.getToken(code);
 
+  let googleEmail: string | null = null;
+  try {
+    const tempClient = new google.auth.OAuth2();
+    tempClient.setCredentials(tokens);
+    const oauth2 = google.oauth2({ version: "v2", auth: tempClient });
+    const { data } = await oauth2.userinfo.get();
+    googleEmail = data.email || null;
+  } catch {
+    // email fetch best-effort
+  }
+
   await prisma.googleConnection.upsert({
     where: { userId },
     update: {
       accessToken: tokens.access_token!,
       refreshToken: tokens.refresh_token!,
       tokenExpiry: new Date(tokens.expiry_date!),
-      googleEmail: null,
+      googleEmail,
     },
     create: {
       userId,
       accessToken: tokens.access_token!,
       refreshToken: tokens.refresh_token!,
       tokenExpiry: new Date(tokens.expiry_date!),
+      googleEmail,
     },
   });
 
@@ -88,9 +101,16 @@ export async function getGoogleConnection(userId: string) {
   });
 }
 
+export async function disconnectGoogle(userId: string) {
+  return prisma.googleConnection.delete({
+    where: { userId },
+  });
+}
+
 export default {
   getGoogleAuthUrl,
   handleGoogleCallback,
   getAuthenticatedClient,
   getGoogleConnection,
+  disconnectGoogle,
 };
