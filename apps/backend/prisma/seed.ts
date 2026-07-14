@@ -331,6 +331,7 @@ async function main() {
         status: DocumentStatus.VERIFIED,
         applicationId: app1.id,
         uploadedById: loanOfficer1.id,
+        reviewerNotes: "Documento valido, scadenza 2028",
       },
       {
         documentType: DocumentCategory.INCOME_PROOF,
@@ -338,7 +339,7 @@ async function main() {
         filePath: "/uploads/certificato_stipendio_ferrari.pdf",
         fileSize: 180000,
         mimeType: "application/pdf",
-        status: DocumentStatus.RECEIVED,
+        status: DocumentStatus.UNDER_REVIEW,
         applicationId: app1.id,
         uploadedById: loanOfficer1.id,
       },
@@ -351,6 +352,7 @@ async function main() {
         status: DocumentStatus.VERIFIED,
         applicationId: app1.id,
         uploadedById: loanOfficer1.id,
+        reviewerNotes: "Ultimi 3 mesi, tutto in ordine",
       },
       {
         documentType: DocumentCategory.TAX_DOCUMENT,
@@ -358,7 +360,7 @@ async function main() {
         filePath: "/uploads/dichiarazione_redditi_ferrari.pdf",
         fileSize: 340000,
         mimeType: "application/pdf",
-        status: DocumentStatus.PENDING,
+        status: DocumentStatus.MISSING,
         applicationId: app1.id,
         uploadedById: loanOfficer1.id,
       },
@@ -378,9 +380,45 @@ async function main() {
         filePath: "/uploads/busta_paga_romano.pdf",
         fileSize: 150000,
         mimeType: "application/pdf",
-        status: DocumentStatus.PENDING,
+        status: DocumentStatus.REQUESTED,
         applicationId: app2.id,
         uploadedById: loanOfficer2.id,
+      },
+    ],
+  });
+
+  // Document Requests
+  await prisma.documentRequest.createMany({
+    data: [
+      {
+        documentType: DocumentCategory.TAX_DOCUMENT,
+        message: "Si prega di fornire la dichiarazione dei redditi degli ultimi due anni fiscali.",
+        status: "PENDING",
+        applicationId: app1.id,
+        requestedById: loanOfficer1.id,
+      },
+      {
+        documentType: DocumentCategory.PAYSLIP,
+        message: "Certificato di stipendio aggiornato (ultimo mese) dal datore di lavoro.",
+        status: "PENDING",
+        applicationId: app2.id,
+        requestedById: loanOfficer2.id,
+      },
+    ],
+  });
+
+  // Document Reminders
+  await prisma.documentReminder.createMany({
+    data: [
+      {
+        reminderType: "MISSING_DOCUMENT",
+        message: "Manca la dichiarazione dei redditi per la pratica di Giuseppe Ferrari.",
+        applicationId: app1.id,
+      },
+      {
+        reminderType: "PENDING_REVIEW",
+        message: "Certificato di stipendio in attesa di revisione per la pratica di Maria Romano.",
+        applicationId: app2.id,
       },
     ],
   });

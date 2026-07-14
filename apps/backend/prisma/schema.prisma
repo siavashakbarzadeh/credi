@@ -87,15 +87,22 @@ enum DocumentCategory {
   GUARANTOR_ID
   GUARANTOR_INCOME
   COLLATERAL_DOC
+  CREDIT_REPORT
+  PROPERTY_VALUATION
+  BUSINESS_REGISTRATION
+  INSURANCE_CERTIFICATE
   OTHER
 }
 
 enum DocumentStatus {
   PENDING
+  MISSING
   RECEIVED
+  UNDER_REVIEW
   VERIFIED
   REJECTED
   EXPIRED
+  REQUESTED
 }
 
 enum CollateralType {
@@ -295,24 +302,66 @@ model Collateral {
 }
 
 model UploadedDocument {
-  id            String           @id @default(uuid()) @db.Uuid
-  documentType  DocumentCategory @map("document_type")
-  fileName      String           @map("file_name")
-  filePath      String           @map("file_path")
-  fileSize      Int              @map("file_size")
-  mimeType      String           @map("mime_type")
-  status        DocumentStatus   @default(PENDING)
-  rejectionReason String?        @map("rejection_reason")
-  createdAt     DateTime         @default(now()) @map("created_at")
-  updatedAt     DateTime         @updatedAt @map("updated_at")
+  id              String           @id @default(uuid()) @db.Uuid
+  documentType    DocumentCategory @map("document_type")
+  fileName        String           @map("file_name")
+  filePath        String           @map("file_path")
+  fileSize        Int              @map("file_size")
+  mimeType        String           @map("mime_type")
+  status          DocumentStatus   @default(PENDING)
+  rejectionReason String?          @map("rejection_reason")
+  reviewerNotes   String?          @map("reviewer_notes")
+  expiryDate      DateTime?        @map("expiry_date")
+  isRequired      Boolean          @default(true) @map("is_required")
+  fileHash        String?          @map("file_hash")
+  reviewedAt      DateTime?        @map("reviewed_at")
+  requestedAt     DateTime?        @map("requested_at")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
 
   application   LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   applicationId String          @map("application_id") @db.Uuid
   uploadedBy    User            @relation(fields: [uploadedById], references: [id])
   uploadedById  String          @map("uploaded_by_id") @db.Uuid
+  reviewedBy    User?           @relation(fields: [reviewedById], references: [id])
+  reviewedById  String?         @map("reviewed_by_id") @db.Uuid
 
   @@index([applicationId])
+  @@index([status])
+  @@index([expiryDate])
   @@map("uploaded_documents")
+}
+
+model DocumentRequest {
+  id            String           @id @default(uuid()) @db.Uuid
+  documentType  DocumentCategory @map("document_type")
+  message       String?
+  status        String           @default("PENDING")
+  requestedAt   DateTime         @default(now()) @map("requested_at")
+  fulfilledAt   DateTime?        @map("fulfilled_at")
+  createdAt     DateTime         @default(now()) @map("created_at")
+
+  application   LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String          @map("application_id") @db.Uuid
+  requestedBy   User            @relation(fields: [requestedById], references: [id])
+  requestedById String          @map("requested_by_id") @db.Uuid
+
+  @@index([applicationId])
+  @@map("document_requests")
+}
+
+model DocumentReminder {
+  id            String   @id @default(uuid()) @db.Uuid
+  reminderType  String   @map("reminder_type")
+  message       String
+  sentAt        DateTime? @map("sent_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  application   LoanApplication @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  applicationId String          @map("application_id") @db.Uuid
+
+  @@index([applicationId])
+  @@map("document_reminders")
 }
 
 model GoogleConnection {
