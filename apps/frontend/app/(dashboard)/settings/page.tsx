@@ -64,7 +64,7 @@ export default function SettingsPage() {
             Collega il tuo account Google per creare e gestire documenti Google Docs associati alle pratiche.
           </p>
           <a
-            href={`http://localhost:3001/api/auth/google/start?userId=${user?.id}`}
+            href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001/api"}/auth/google/start?userId=${user?.id}`}
             className="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
             Collega account Google
