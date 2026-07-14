@@ -1,7 +1,14 @@
 import prisma from "../../lib/prisma.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { google } from "googleapis";
 import { LoginInput, RegisterInput } from "./auth.schema.js";
+
+const googleOAuth = new google.auth.OAuth2(
+  process.env.GOOGLE_CLIENT_ID,
+  process.env.GOOGLE_CLIENT_SECRET,
+  process.env.GOOGLE_REDIRECT_URI
+);
 
 function generateAccessToken(user: { id: string; email: string; role: string }) {
   return jwt.sign(
@@ -133,4 +140,62 @@ export async function refreshTokens(refreshToken: string) {
   }
 }
 
-export default { login, register, getMe, refreshTokens };
+export function getGoogleLoginUrl(): string {
+  const scopes = ["openid", "email", "profile"];
+  return googleOAuth.generateAuthUrl({
+    access_type: "offline",
+    scope: scopes,
+    prompt: "consent",
+  });
+}
+
+export async function handleGoogleLoginCallback(code: string) {
+  const { tokens } = await googleOAuth.getToken(code);
+  googleOAuth.setCredentials(tokens);
+
+  const oauth2 = google.oauth2({ version: "v2", auth: googleOAuth });
+  const { data: googleUser } = await oauth2.userinfo.get();
+
+  if (!googleUser.email) {
+    throw new Error("Email Google non disponibile");
+  }
+
+  let user = await prisma.user.findUnique({
+    where: { email: googleUser.email },
+  });
+
+  if (!user) {
+    const passwordHash = await bcrypt.hash(Math.random().toString(36), 10);
+    user = await prisma.user.create({
+      data: {
+        email: googleUser.email,
+        passwordHash,
+        firstName: googleUser.given_name || "",
+        lastName: googleUser.family_name || "",
+        role: "LOAN_OFFICER",
+        active: true,
+      },
+    });
+  }
+
+  if (!user.active) {
+    throw new Error("Account disattivato. Contattare l'amministratore.");
+  }
+
+  const accessToken = generateAccessToken(user);
+  const refreshToken = generateRefreshToken(user);
+
+  return {
+    user: {
+      id: user.id,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+    },
+    accessToken,
+    refreshToken,
+  };
+}
+
+export default { login, register, getMe, refreshTokens, getGoogleLoginUrl, handleGoogleLoginCallback };
