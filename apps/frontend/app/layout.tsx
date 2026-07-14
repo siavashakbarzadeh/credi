@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ThemeProvider } from "next-themes";
 import "../styles/globals.css";
 import { Providers } from "./providers";
 
