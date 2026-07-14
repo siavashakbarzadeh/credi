@@ -4,12 +4,6 @@ import jwt from "jsonwebtoken";
 import { google } from "googleapis";
 import { LoginInput, RegisterInput } from "./auth.schema.js";
 
-const googleOAuth = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_REDIRECT_URI
-);
-
 function generateAccessToken(user: { id: string; email: string; role: string }) {
   return jwt.sign(
     { id: user.id, email: user.email, role: user.role },
@@ -140,9 +134,20 @@ export async function refreshTokens(refreshToken: string) {
   }
 }
 
+function getLoginOAuthClient() {
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3001";
+  const redirectUri = `${backendUrl}/api/auth/google/login/callback`;
+  return new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    redirectUri
+  );
+}
+
 export function getGoogleLoginUrl(): string {
+  const client = getLoginOAuthClient();
   const scopes = ["openid", "email", "profile"];
-  return googleOAuth.generateAuthUrl({
+  return client.generateAuthUrl({
     access_type: "offline",
     scope: scopes,
     prompt: "consent",
@@ -150,10 +155,11 @@ export function getGoogleLoginUrl(): string {
 }
 
 export async function handleGoogleLoginCallback(code: string) {
-  const { tokens } = await googleOAuth.getToken(code);
-  googleOAuth.setCredentials(tokens);
+  const client = getLoginOAuthClient();
+  const { tokens } = await client.getToken(code);
+  client.setCredentials(tokens);
 
-  const oauth2 = google.oauth2({ version: "v2", auth: googleOAuth });
+  const oauth2 = google.oauth2({ version: "v2", auth: client });
   const { data: googleUser } = await oauth2.userinfo.get();
 
   if (!googleUser.email) {

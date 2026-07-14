@@ -1,13 +1,17 @@
 import { google } from "googleapis";
 import prisma from "./prisma.js";
 
-const oauth2Client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
-  process.env.GOOGLE_REDIRECT_URI
-);
+function getDocsOAuth2Client() {
+  const backendUrl = process.env.BACKEND_URL || "http://localhost:3001";
+  return new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    `${backendUrl}/api/auth/google/callback`
+  );
+}
 
-export function getGoogleAuthUrl(userId: string): string {
+export function getGoogleAuthUrl(userId: string) {
+  const oauth2Client = getDocsOAuth2Client();
   const scopes = [
     "https://www.googleapis.com/auth/documents",
     "https://www.googleapis.com/auth/drive",
@@ -24,13 +28,13 @@ export function getGoogleAuthUrl(userId: string): string {
 }
 
 export async function handleGoogleCallback(code: string, userId: string) {
+  const oauth2Client = getDocsOAuth2Client();
   const { tokens } = await oauth2Client.getToken(code);
 
   let googleEmail: string | null = null;
   try {
-    const tempClient = new google.auth.OAuth2();
-    tempClient.setCredentials(tokens);
-    const oauth2 = google.oauth2({ version: "v2", auth: tempClient });
+    oauth2Client.setCredentials(tokens);
+    const oauth2 = google.oauth2({ version: "v2", auth: oauth2Client });
     const { data } = await oauth2.userinfo.get();
     googleEmail = data.email || null;
   } catch {
@@ -66,6 +70,7 @@ export async function getAuthenticatedClient(userId: string) {
     throw new Error("Connessione Google non configurata per questo utente");
   }
 
+  const oauth2Client = getDocsOAuth2Client();
   oauth2Client.setCredentials({
     access_token: connection.accessToken,
     refresh_token: connection.refreshToken,
