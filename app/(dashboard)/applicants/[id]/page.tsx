@@ -2,12 +2,12 @@
 
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import api from "../../../lib/api-client";
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
-import { Skeleton } from "../../../components/ui/skeleton";
-import { formatDate, formatCurrency } from "../../../lib/utils";
+import api from "../../../../lib/api-client";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card";
+import { Skeleton } from "../../../../components/ui/skeleton";
+import { formatDate, formatCurrency } from "../../../../lib/utils";
 import Link from "next/link";
-import { Button } from "../../../components/ui/button";
+import { Button } from "../../../../components/ui/button";
 
 export default function ApplicantDetailPage() {
   const params = useParams();

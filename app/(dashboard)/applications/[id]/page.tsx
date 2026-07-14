@@ -2,18 +2,18 @@
 
 import { useParams } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { applicationsApi } from "../../../features/applications/applications-api";
-import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
-import { Button } from "../../../components/ui/button";
-import { Badge } from "../../../components/ui/badge";
-import { StatusBadge } from "../../../components/cases/status-badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs";
-import { Skeleton } from "../../../components/ui/skeleton";
-import { Textarea } from "../../../components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
-import { formatCurrency, formatDate, formatDateTime } from "../../../lib/utils";
-import { t } from "../../../lib/i18n";
-import { toast } from "../../../components/notifications/toaster";
+import { applicationsApi } from "../../../../features/applications/applications-api";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../../components/ui/card";
+import { Button } from "../../../../components/ui/button";
+import { Badge } from "../../../../components/ui/badge";
+import { StatusBadge } from "../../../../components/cases/status-badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../components/ui/tabs";
+import { Skeleton } from "../../../../components/ui/skeleton";
+import { Textarea } from "../../../../components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../../components/ui/select";
+import { formatCurrency, formatDate, formatDateTime } from "../../../../lib/utils";
+import { t } from "../../../../lib/i18n";
+import { toast } from "../../../../components/notifications/toaster";
 import { useState } from "react";
 import {
   User, Briefcase, Wallet, Shield, FileText, StickyNote, Activity,

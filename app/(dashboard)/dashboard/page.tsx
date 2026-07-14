@@ -1,11 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { dashboardApi } from "../../features/dashboard/dashboard-api";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
-import { StatusBadge } from "../../components/cases/status-badge";
-import { Skeleton } from "../../components/ui/skeleton";
-import { formatCurrency, formatDate } from "../../lib/utils";
+import { dashboardApi } from "../../../features/dashboard/dashboard-api";
+import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
+import { StatusBadge } from "../../../components/cases/status-badge";
+import { Skeleton } from "../../../components/ui/skeleton";
+import { formatCurrency, formatDate } from "../../../lib/utils";
 import { FileText, Users, Clock, AlertCircle, TrendingUp } from "lucide-react";
 import Link from "next/link";
 
