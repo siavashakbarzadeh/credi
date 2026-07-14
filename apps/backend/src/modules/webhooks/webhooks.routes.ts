@@ -89,7 +89,7 @@ export async function webhooksRoutes(fastify: FastifyInstance) {
 
       if (application.linkedByUserId) {
         const alreadyNotified = application.assignments.some(
-          (a) => a.userId === application.linkedByUserId
+          (a: any) => a.userId === application.linkedByUserId
         );
         if (!alreadyNotified) {
           const notification = await prisma.notification.create({

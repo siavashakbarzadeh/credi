@@ -38,7 +38,7 @@ export async function getDashboardStats(userId?: string) {
   ]);
 
   const statusCounts: Record<string, number> = {};
-  applicationsByStatus.forEach((s) => {
+  applicationsByStatus.forEach((s: any) => {
     statusCounts[s.status] = s._count.id;
   });
 

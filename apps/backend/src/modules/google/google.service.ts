@@ -2,7 +2,7 @@ import prisma from "../../lib/prisma.js";
 import { createGoogleDoc, getGoogleDocMetadata } from "../../lib/google-docs.js";
 import { getDriveFileMetadata, createWatchChannel, stopWatchChannel } from "../../lib/google-drive.js";
 import { startWatchForApplication } from "../../lib/google-watch.js";
-import { nanoid } from "nanoid.js";
+import { nanoid } from "nanoid";
 import { logger } from "../../utils/logger.js";
 
 export async function createGoogleDocForApplication(applicationId: string, userId: string) {

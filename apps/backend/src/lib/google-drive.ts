@@ -62,12 +62,12 @@ export async function listChanges(
 
   const response = await drive.changes.list({
     pageToken: startToken,
-    fields: "nextPageToken, newStartToken, items(fileId, file(id, name, modifiedTime))",
+    fields: "nextPageToken, newStartPageToken, changes(fileId, file(id, name, modifiedTime))",
   });
 
   return {
-    changes: response.data.items || [],
-    newStartToken: response.data.newStartToken || null,
+    changes: response.data.changes || [],
+    newStartPageToken: response.data.newStartPageToken || null,
     nextPageToken: response.data.nextPageToken || null,
   };
 }

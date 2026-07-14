@@ -116,7 +116,7 @@ function getMissingDocumentTypes(documents: any[]) {
 }
 
 export async function createApplication(data: any, userId: string) {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: any) => {
     let applicantId = data.applicantId;
 
     if (!applicantId && data.applicant) {
@@ -265,7 +265,7 @@ export async function updateApplicationStatus(
   });
   if (!app) throw new Error("Pratica non trovata");
 
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: any) => {
     const updated = await tx.loanApplication.update({
       where: { id },
       data: { status: status as any },
@@ -339,7 +339,7 @@ export async function assignApplication(id: string, userId: string, assignedBy: 
   });
   if (!app) throw new Error("Pratica non trovata");
 
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: any) => {
     await tx.applicationAssignment.upsert({
       where: { applicationId: id },
       update: { userId },
