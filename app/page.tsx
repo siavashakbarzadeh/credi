@@ -46,48 +46,48 @@ const steps = [
     icon: CreditCard,
     title: "1. Accedi con Google",
     description:
-      "Clicca sul pulsante \"Continua con Google\" in alto. Usa il tuo account Google esistente: non serve creare una nuova password. Tutti possono accedere liberamente.",
+      "Clicca su \"Continua con Google\" ed entra nel sistema con il tuo account Google. Non servono credenziali separate: l'accesso e gestito da Google in modo sicuro.",
   },
   {
     icon: Cloud,
-    title: "2. Prepara i documenti su Google Docs",
+    title: "2. Documenti su Google Drive",
     description:
-      "Apri Google Drive e carica i tuoi documenti (carta d'identità, redditi, buste paga). Organizzali in una cartella condivisa o in Google Docs e rendili accessibili.",
+      "I documenti dei richiedenti (documenti d'identita, redditi, garanzie) vengono organizzati su Google Drive o Google Docs e collegati alla pratica. Il sistema li associa automaticamente al fascicolo.",
   },
   {
     icon: FolderOpen,
-    title: "3. Invia la tua richiesta",
+    title: "3. Crea e gestisci le pratiche",
     description:
-      "Compila il modulo di richiesta prestito all'interno della piattaforma e inserisci i link ai tuoi documenti su Google Docs. Il sistema li leggerà automaticamente.",
+      "Registra i richiedenti, apri nuove pratiche di prestito e collega la documentazione necessaria. Ogni pratica tiene traccia di importi, stato e scadenze.",
   },
   {
     icon: CheckCircle2,
-    title: "4. Monitora lo stato",
+    title: "4. Monitora e aggiorna",
     description:
-      "Tieni traccia dello stato della tua pratica in tempo reale dal pannello di controllo. Riceverai notifiche ad ogni aggiornamento.",
+      "Segui l'avanzamento di ogni pratica dal pannello di controllo, aggiorna gli stati e ricevi notifiche in tempo reale su scadenze e aggiornamenti.",
   },
 ];
 
 const features = [
   {
     icon: Shield,
-    title: "Sicuro e protetto",
-    description: "I tuoi dati sono protetti con crittografia e autenticazione Google.",
+    title: "Gestione centralizzata",
+    description: "Tutte le pratiche e i richiedenti in un unico pannello di controllo.",
   },
   {
     icon: Users,
-    title: "Accessibile a tutti",
-    description: "Chiunque abbia un account Google può registrarsi e utilizzare la piattaforma.",
+    title: "Anagrafica richiedenti",
+    description: "Registra e consulta i dati di ogni richiedente in modo strutturato.",
   },
   {
     icon: Zap,
-    title: "Veloce e automatico",
-    description: "Lettura automatica dei documenti e calcolo immediato dell'idoneità.",
+    title: "Monitoraggio stati",
+    description: "Traccia lo stato di ogni pratica: da bozza ad approvata o rifiutata.",
   },
   {
     icon: Cloud,
-    title: "Integrazione Google Docs",
-    description: "Carica i documenti su Google Drive e noi li elaboriamo per te.",
+    title: "Documentazione su Google",
+    description: "Collega i documenti salvati su Google Drive direttamente alle pratiche.",
   },
 ];
 
@@ -104,7 +104,7 @@ export default function HomePage() {
   }, [router]);
 
   const handleGoogleLogin = () => {
-    window.location.href = "/api/auth/google/login";
+    router.push("/dashboard");
   };
 
   return (
@@ -144,7 +144,7 @@ export default function HomePage() {
             }`}
           >
             <Sparkles className="h-4 w-4" />
-            Piattaforma di gestione prestiti online
+            Sistema di gestione pratiche di prestito
           </div>
 
           <h1
@@ -152,11 +152,11 @@ export default function HomePage() {
               mounted ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
             }`}
           >
-            Richiedi il tuo{" "}
+            Gestisci le pratiche di{" "}
             <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent animate-gradient-shift">
               prestito
             </span>{" "}
-            in pochi minuti
+            con efficienza
           </h1>
 
           <p
@@ -164,8 +164,9 @@ export default function HomePage() {
               mounted ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
             }`}
           >
-            Gestisci la tua pratica di prestito in modo semplice e veloce. Accedi con Google,
-            carica i tuoi documenti e monitora lo stato della richiesta in tempo reale.
+            Credi e la piattaforma per la gestione dei fascicoli di prestito. Registra i
+            richiedenti, collega i documenti da Google Drive e monitora l'avanzamento di ogni
+            pratica in tempo reale.
           </p>
 
           <div
@@ -198,13 +199,13 @@ export default function HomePage() {
             }`}
           >
             <span className="flex items-center gap-1.5">
-              <Lock className="h-4 w-4" /> Connessione sicura
+              <Lock className="h-4 w-4" /> Dati protetti
             </span>
             <span className="flex items-center gap-1.5">
-              <Users className="h-4 w-4" /> Aperto a tutti
+              <Users className="h-4 w-4" /> Multi-utente
             </span>
             <span className="flex items-center gap-1.5">
-              <CheckCircle2 className="h-4 w-4 text-green-500" /> Senza registrazione
+              <CheckCircle2 className="h-4 w-4 text-green-500" /> Accesso con Google
             </span>
           </div>
 
@@ -237,7 +238,7 @@ export default function HomePage() {
               Come funziona
             </h2>
             <p className="mt-3 text-muted-foreground">
-              Quattro semplici passaggi per richiedere il tuo prestito
+              Quattro passaggi per gestire un fascicolo di prestito
             </p>
           </div>
 
@@ -273,18 +274,18 @@ export default function HomePage() {
             <div className="relative z-10">
               <Cloud className="mx-auto mb-4 h-12 w-12 animate-bounce-subtle" />
               <h2 className="mb-4 text-2xl font-bold md:text-3xl">
-                Documenti su Google Docs
+                Documentazione su Google Drive
               </h2>
               <p className="mx-auto mb-6 max-w-2xl text-blue-50">
-                Non serve scaricare o stampare nulla. Carica tutti i tuoi documenti direttamente
-                su <strong className="font-bold text-white">Google Drive</strong> e condividi i
-                link nella piattaforma. Noi ci occupiamo del resto: il sistema legge e verifica
-                automaticamente i tuoi documenti.
+                I documenti di ogni pratica vengono salvati e organizzati su{" "}
+                <strong className="font-bold text-white">Google Drive</strong> o Google Docs.
+                Collega i link alla pratica e il sistema li assocera automaticamente al fascicolo
+                del richiedente, mantenendo tutto centralizzato e accessibile.
               </p>
               <div className="mx-auto grid max-w-2xl gap-3 text-left sm:grid-cols-2">
                 <div className="flex items-center gap-3 rounded-xl bg-white/15 p-3 backdrop-blur">
                   <FileText className="h-5 w-5 flex-shrink-0 text-blue-100" />
-                  <span className="text-sm">Carta d'identità o passaporto</span>
+                  <span className="text-sm">Documento d'identita del richiedente</span>
                 </div>
                 <div className="flex items-center gap-3 rounded-xl bg-white/15 p-3 backdrop-blur">
                   <FileText className="h-5 w-5 flex-shrink-0 text-blue-100" />
@@ -296,7 +297,7 @@ export default function HomePage() {
                 </div>
                 <div className="flex items-center gap-3 rounded-xl bg-white/15 p-3 backdrop-blur">
                   <FileText className="h-5 w-5 flex-shrink-0 text-blue-100" />
-                  <span className="text-sm">Eventuali garanzie</span>
+                  <span className="text-sm">Eventuali garanzie e perizie</span>
                 </div>
               </div>
             </div>
@@ -307,23 +308,23 @@ export default function HomePage() {
           <div className="grid gap-6 md:grid-cols-3">
             <div className="flex flex-col items-center rounded-2xl border border-slate-200/60 bg-white/60 p-6 text-center backdrop-blur dark:border-slate-800 dark:bg-slate-900/40">
               <Eye className="mb-3 h-8 w-8 text-blue-600 dark:text-blue-400" />
-              <h3 className="mb-1 font-semibold">Trasparenza totale</h3>
+              <h3 className="mb-1 font-semibold">Panoramica completa</h3>
               <p className="text-sm text-muted-foreground">
-                Vedi lo stato della tua pratica in ogni momento, senza intermediari.
+                Visualizza tutte le pratiche e il loro stato da un'unica schermata.
               </p>
             </div>
             <div className="flex flex-col items-center rounded-2xl border border-slate-200/60 bg-white/60 p-6 text-center backdrop-blur dark:border-slate-800 dark:bg-slate-900/40">
               <Shield className="mb-3 h-8 w-8 text-green-600 dark:text-green-400" />
-              <h3 className="mb-1 font-semibold">Privacy garantita</h3>
+              <h3 className="mb-1 font-semibold">Documenti centralizzati</h3>
               <p className="text-sm text-muted-foreground">
-                I tuoi documenti restano sul tuo Google Drive. Nessuna copia locale.
+                I documenti restano su Google Drive e sono collegati a ogni fascicolo.
               </p>
             </div>
             <div className="flex flex-col items-center rounded-2xl border border-slate-200/60 bg-white/60 p-6 text-center backdrop-blur dark:border-slate-800 dark:bg-slate-900/40">
               <Users className="mb-3 h-8 w-8 text-purple-600 dark:text-purple-400" />
-              <h3 className="mb-1 font-semibold">Per tutti</h3>
+              <h3 className="mb-1 font-semibold">Anagrafica richiedenti</h3>
               <p className="text-sm text-muted-foreground">
-                Bastano un account Google e i tuoi documenti. Nessun costo nascosto.
+                Registra i dati dei richiedenti e collegali alle relative pratiche.
               </p>
             </div>
           </div>
@@ -344,9 +345,9 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-            <h2 className="mb-3 text-2xl font-bold">Pronto per iniziare?</h2>
+            <h2 className="mb-3 text-2xl font-bold">Inizia a gestire le pratiche</h2>
             <p className="mb-6 text-muted-foreground">
-              Accedi subito con il tuo account Google. È gratis e ci vogliono pochi secondi.
+              Accedi con il tuo account Google ed entra nel pannello di gestione.
             </p>
             <Button
               size="lg"
