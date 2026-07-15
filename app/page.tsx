@@ -130,7 +130,7 @@ export default function HomePage() {
           </div>
           <Button
             variant="ghost"
-            onClick={() => router.push("/login")}
+            onClick={() => router.push("/dashboard")}
             className="text-sm font-medium text-muted-foreground hover:text-foreground"
           >
             Accedi con email
@@ -186,7 +186,7 @@ export default function HomePage() {
             <Button
               size="lg"
               variant="outline"
-              onClick={() => router.push("/login")}
+              onClick={() => router.push("/dashboard")}
               className="h-14 rounded-xl border-2 px-8 text-base font-semibold"
             >
               Accedi con email
